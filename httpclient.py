@@ -87,11 +87,11 @@ class HTTPClient(object):
 
     def GET(self, url, args=None):
         code, body = self.testConnection(url)
-    
+        userAgent = "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_2) AppleWebKit/537.36 (KHTML, like Gecko)"
         if self.urlParse.path:
-            self.sendall("GET %s HTTP/1.1\r\nHost: %s\r\nConnection: close\r\n\r\n" % (self.urlParse.path, self.urlParse.hostname))
+            self.sendall("GET %s HTTP/1.1\r\nHost: %s\r\nUser-Agent: %s\r\nConnection: close\r\n\r\n" % (self.urlParse.path, self.urlParse.hostname, userAgent))
         else:
-            self.sendall("GET / HTTP/1.1\r\nHost: %s\r\nConnection: close\r\n\r\n" % self.urlParse.hostname)
+            self.sendall("GET / HTTP/1.1\r\nHost: %s\r\nUser-Agent: %s\r\nConnection: close\r\n\r\n" % (self.urlParse.hostname, userAgent))
         
         data = self.recvall(self.socket)
         code = self.get_code(data)
