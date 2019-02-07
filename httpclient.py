@@ -103,8 +103,23 @@ class HTTPClient(object):
         return HTTPResponse(code, body)
 
     def POST(self, url, args=None):
-        code = 500
-        body = ""
+        code, body = self.testConnection(url)
+        if args != None:
+            urlEncode = urllib.parse.urlencode(args)
+        else:
+            urlEncode = ""
+        if self.urlParse.path:
+            self.sendall("POST %s HTTP/1.1\r\nHost: %s\r\nContent-Length:%s\r\nContent-Type: application/x-www-form-urlencoded\r\nConnection: close\r\n\r\n%s" % (self.urlParse.path, self.urlParse.hostname, len(urlEncode), urlEncode))
+        else:
+            self.sendall("POST / HTTP/1.1\r\nHost: %s\r\nContent-Length:%s\r\nContent-Type: application/x-www-form-urlencoded\r\nConnection: close\r\n\r\n%s" %  (self.urlParse.hostname, len(urlEncode), urlEncode))
+            # self.sendall("%s" % urlEncode)
+        
+        data = self.recvall(self.socket)
+        code = self.get_code(data)
+
+        body = self.get_body(data)
+
+        # print(data)
 
         return HTTPResponse(code, body)
 
