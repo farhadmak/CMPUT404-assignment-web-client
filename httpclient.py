@@ -81,7 +81,7 @@ class HTTPClient(object):
             code = 200
             return code, body
         except Exception as e:
-            print("Was not able to connect")
+            print(e)
             exit(1)
             
 
